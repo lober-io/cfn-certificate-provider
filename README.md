@@ -26,18 +26,35 @@ you can fully automate the provisioning of certificates, with the following reso
 Checkout the sample in [cloudformation/demo-stack.yaml](cloudformation/demo-stack.yaml).
 
 ## Installation
+
 To install this custom resource, type:
 
 ```sh
 git clone https://github.com/binxio/cfn-certificate-provider.git
 cd cfn-certificate-provider
+```
+
+###  serverless.com
+
+The serverless.com deployment will  package from src and upload to a by it created bucket. The aws-profile must be valid and fit to your environment.
+
+```
+serverless plugin install -n serverless-python-requirements
+serverless plugin install -n serverless-pseudo-parameters
+
+severless deploy --stage dev --aws-profile dev
+serverless deploy --stage prod --aws-profile prod
+```
+
+### AWS CLI
+```
 aws cloudformation deploy \
         --capabilities CAPABILITY_IAM \
 	--stack-name cfn-certificate-provider \
 	--template-file cloudformation/cfn-resource-provider.yaml
 ```
 
-This CloudFormation template will use our pre-packaged provider from `s3://binxio-public-${AWS_REGION}/lambdas/cfn-certificate-provider-0.2.4.zip`.
+The  AWS CLI deployment (CloudFormation template) will use our pre-packaged provider from `s3://binxio-public-${AWS_REGION}/lambdas/cfn-certificate-provider-0.2.4.zip`.
 
 
 ## Demo

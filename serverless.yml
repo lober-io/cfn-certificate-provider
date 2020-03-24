@@ -1,0 +1,39 @@
+service: cfn-certificate-provider
+
+plugins:
+  - serverless-python-requirements
+  - serverless-pseudo-parameters
+provider:
+  name: aws
+  runtime: python3.7
+  stage: ${opt:stage, 'dev'}
+  profile: ${opt:aws-profile, 'dev'}
+  region: eu-central-1
+
+  iamRoleStatements: # permissions for all of your functions can be set here
+    - Effect: Allow
+      Action: # Gives permission to a ACM
+          - acm:RequestCertificate
+          - acm:DescribeCertificate
+          - acm:UpdateCertificateOptions
+          - acm:DeleteCertificate
+      Resource: 
+          - '*'
+    - Effect: Allow
+      Action:
+          - lambda:InvokeFunction
+      Resource:
+          - !Sub 'arn:aws:lambda:${self:provider.region}:#{AWS::AccountId}:function:cfn-certificate-provider-${self:provider.stage}-crt-handler'
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+
+package:
+  individually: true
+
+functions:
+  crt-handler:
+    handler: provider.handler
+    module: src
+    memorySize: 128
+    timeout: 300

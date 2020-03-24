@@ -106,3 +106,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# serverless stuff
+node_modules
+.serverless
